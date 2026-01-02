@@ -4,7 +4,7 @@ A fun, nostalgic gachapon (capsule toy) machine to celebrate the 2026 Lunar New 
 
 ## ✨ About
 
-This project is dedicated to everyone who wants to have a little fun and relive childhood memories of playing with gachapon machines. Turn the knob, get a capsule, and receive a meaningful fortune message to kick start your new lunar new year with positivity and good vibes!
+Made for everyone who loves a bit of fun and nostalgia, this project lets you relive the joy of gachapon machines. Turn the knob, grab a capsule, and uncover a lucky message to kick off the Lunar New Year with great vibes and positive energy.
 
 ## 🎯 Features
 
