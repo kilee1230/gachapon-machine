@@ -29,9 +29,9 @@ jobs:
 
     - name: Serve Storybook and run tests
       run: |
-        npm install -g serve
+        npm install -g serve wait-on
         serve storybook-static -l 6006 &
-        npx wait-on http://127.0.0.1:6006 --timeout 60000
+        wait-on http://127.0.0.1:6006 --timeout 60000
         pnpm test-storybook:coverage --url http://127.0.0.1:6006
 
     - name: Upload coverage report
