@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 // Language Type
 export type Language = "zh" | "en";
 
