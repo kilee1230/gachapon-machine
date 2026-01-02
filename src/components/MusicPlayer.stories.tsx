@@ -88,4 +88,158 @@ export const InteractionTestOverlayElements: Story = {
   },
 };
 
+// Interactive test - toggle play button after dismissing overlay
+export const InteractionTestTogglePlayPause: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
 
+    // Mock the audio element to avoid actual playback issues
+    const audioElement = canvasElement.querySelector("audio") as HTMLAudioElement;
+    if (audioElement) {
+      // Mock play to resolve immediately
+      audioElement.play = () => Promise.resolve();
+      audioElement.pause = () => {};
+    }
+
+    // Click overlay to dismiss it
+    const overlay = canvasElement.querySelector(
+      '[class*="fixed inset-0 z-\\[100\\]"]'
+    ) as HTMLElement;
+    if (overlay) {
+      await userEvent.click(overlay);
+    }
+
+    // Wait for overlay to disappear
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    // Find the music control button and click to toggle
+    const musicButton = canvas.getByRole("button", {
+      name: /play music|pause music/i,
+    });
+    await expect(musicButton).toBeInTheDocument();
+
+    // Click to toggle play state
+    await userEvent.click(musicButton);
+
+    // Wait for state update
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  },
+};
+
+// Interactive test - test pause after playing
+export const InteractionTestPauseAfterPlay: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Mock the audio element
+    const audioElement = canvasElement.querySelector("audio") as HTMLAudioElement;
+    if (audioElement) {
+      audioElement.play = () => Promise.resolve();
+      audioElement.pause = () => {};
+    }
+
+    // Click overlay to dismiss and start playing
+    const overlay = canvasElement.querySelector(
+      '[class*="fixed inset-0 z-\\[100\\]"]'
+    ) as HTMLElement;
+    if (overlay) {
+      await userEvent.click(overlay);
+    }
+
+    // Wait for overlay to disappear and music to "start"
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    // Now the music should be "playing", click to pause
+    const musicButton = canvas.getByRole("button", {
+      name: /pause music/i,
+    });
+    await expect(musicButton).toBeInTheDocument();
+
+    // Click to pause
+    await userEvent.click(musicButton);
+
+    // Wait for state update
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Click again to resume
+    const pausedButton = canvas.getByRole("button", {
+      name: /play music/i,
+    });
+    await userEvent.click(pausedButton);
+  },
+};
+
+// Interactive test - handle audio play failure
+export const InteractionTestPlayFailure: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Mock the audio element to fail on play
+    const audioElement = canvasElement.querySelector("audio") as HTMLAudioElement;
+    if (audioElement) {
+      audioElement.play = () => Promise.reject(new Error("Autoplay blocked"));
+      audioElement.pause = () => {};
+    }
+
+    // Click overlay - play will fail but should handle gracefully
+    const overlay = canvasElement.querySelector(
+      '[class*="fixed inset-0 z-\\[100\\]"]'
+    ) as HTMLElement;
+    if (overlay) {
+      await userEvent.click(overlay);
+    }
+
+    // Wait for error handling
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    // Overlay should be dismissed even on error
+    const musicButton = canvas.getByRole("button");
+    await expect(musicButton).toBeInTheDocument();
+  },
+};
+
+// Interactive test - toggle with play failure
+export const InteractionTestToggleWithFailure: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // First let overlay succeed
+    let audioElement = canvasElement.querySelector("audio") as HTMLAudioElement;
+    if (audioElement) {
+      audioElement.play = () => Promise.resolve();
+      audioElement.pause = () => {};
+    }
+
+    // Dismiss overlay
+    const overlay = canvasElement.querySelector(
+      '[class*="fixed inset-0 z-\\[100\\]"]'
+    ) as HTMLElement;
+    if (overlay) {
+      await userEvent.click(overlay);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    // Now make play fail for the toggle
+    audioElement = canvasElement.querySelector("audio") as HTMLAudioElement;
+    if (audioElement) {
+      audioElement.play = () => Promise.reject(new Error("Playback failed"));
+    }
+
+    // Click pause first
+    const pauseButton = canvas.getByRole("button", {
+      name: /pause music/i,
+    });
+    await userEvent.click(pauseButton);
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Now try to play again (will fail silently)
+    const playButton = canvas.getByRole("button", {
+      name: /play music/i,
+    });
+    await userEvent.click(playButton);
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  },
+};
