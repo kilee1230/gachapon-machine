@@ -32,6 +32,11 @@ This project is dedicated to everyone who wants to have a little fun and relive 
 
 3. Open http://localhost:3000 in your browser
 
+## 🎵 Music Credit
+
+Background music: [Chinese New Year](https://pixabay.com/music/world-chinese-new-year-284910/) from Pixabay  
+License: [Pixabay Content License](https://pixabay.com/service/license-summary/) (Free for commercial and non-commercial use, no attribution required)
+
 ## 🧧 Happy Lunar New Year!
 
 May the Year of the Horse bring you good fortune, success, and happiness! 🐴🎊
