@@ -44,6 +44,11 @@ const UI_TEXT = {
 const MAX_CAPSULES = 100;
 
 export default function App() {
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // State Initialization
 
   // 1. Language (Lazy Init)
