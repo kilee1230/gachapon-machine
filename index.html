@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>2026 马年新春扭蛋机</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap');
+      
+      body {
+        font-family: 'Noto Serif SC', serif;
+        overflow-x: hidden;
+        /* Prevent pull-to-refresh on mobile */
+        overscroll-behavior-y: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* Custom Animations */
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+
+      @keyframes spin-fast {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      @keyframes shake-machine {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        25% { transform: translate(2px, 2px) rotate(1deg); }
+        50% { transform: translate(-2px, -2px) rotate(-1deg); }
+        75% { transform: translate(-2px, 2px) rotate(1deg); }
+        100% { transform: translate(2px, -2px) rotate(-1deg); }
+      }
+      
+      @keyframes capsule-rumble {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(-3px, 4px); }
+        50% { transform: translate(3px, -2px); }
+        75% { transform: translate(-2px, -4px); }
+        100% { transform: translate(0, 0); }
+      }
+
+      @keyframes coin-drop {
+        0% { transform: translateY(-100px) rotateY(0) scale(1.2); opacity: 0; }
+        50% { transform: translateY(0) rotateY(180deg) scale(1); opacity: 1; }
+        100% { transform: translateY(20px) rotateY(360deg) scale(0); opacity: 0; }
+      }
+
+      /* Directional Exit Drop from Chute (Right side) */
+      @keyframes chute-exit {
+        0% { 
+            transform: translate(90px, -90px) scale(0.4) rotate(-120deg); 
+            opacity: 0;
+            animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        30% {
+            opacity: 1;
+        }
+        50% { 
+            transform: translate(0px, 0px) scaleX(1.1) scaleY(0.9) rotate(0deg); 
+            animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1); /* Bounce up */
+        }
+        70% {
+             transform: translate(-15px, -30px) scaleX(0.95) scaleY(1.05) rotate(15deg);
+             animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0); /* Fall down */
+        }
+        85% {
+             transform: translate(-5px, 0px) scale(1) rotate(0deg);
+        }
+        92% {
+             transform: translate(2px, -5px) rotate(-5deg);
+        }
+        100% { 
+            transform: translate(0, 0) scale(1) rotate(0deg); 
+        } 
+      }
+      
+      @keyframes shadow-slide {
+        0% { transform: translateX(calc(-50% + 90px)) scale(0.2); opacity: 0; }
+        50% { transform: translateX(-50%) scale(1.2); opacity: 0.5; }
+        70% { transform: translateX(calc(-50% - 15px)) scale(0.8); opacity: 0.3; }
+        100% { transform: translateX(-50%) scale(1); opacity: 0.2; }
+      }
+
+      @keyframes unfold-paper {
+        0% { transform: scaleY(0.1); opacity: 0; }
+        100% { transform: scaleY(1); opacity: 1; }
+      }
+
+      @keyframes shine {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+
+      .capsule-shake {
+        animation: shake-machine 0.5s infinite;
+      }
+      
+      .coin-anim {
+        animation: coin-drop 0.8s forwards ease-in;
+      }
+
+      .paper-reveal {
+        transform-origin: top;
+        animation: unfold-paper 0.8s ease-out forwards;
+      }
+
+      .bg-pattern {
+        background-color: #7f1d1d;
+        background-image: radial-gradient(#991b1b 15%, transparent 16%), radial-gradient(#991b1b 15%, transparent 16%);
+        background-size: 60px 60px;
+        background-position: 0 0, 30px 30px;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "zod": "https://esm.sh/zod@^4.3.4"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-pattern min-h-screen">
+    <div id="root"></div>
+  <script type="module" src="/src/index.tsx"></script>
+</body>
+</html>
