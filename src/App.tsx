@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { GachaponMachine } from "./components/GachaponMachine";
 import { ResultModal } from "./components/ResultModal";
+import { MusicPlayer } from "./components/MusicPlayer";
 import { FORTUNES } from "./data/fortunes";
 import { GameState, Fortune, Language } from "./types";
 import { Shuffle } from "lucide-react";
@@ -199,6 +200,9 @@ export default function App() {
 
   return (
     <div className="h-[100dvh] w-full flex flex-col items-center justify-between pt-12 pb-6 sm:py-6 text-white overflow-hidden relative touch-manipulation">
+      {/* Background Music */}
+      <MusicPlayer />
+
       {/* Language Toggle - positioned in header area */}
       <div className="absolute top-3 right-3 z-50">
         <div className="flex items-center bg-black/20 backdrop-blur-sm rounded-full p-0.5 border border-white/10 shadow-md">
