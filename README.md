@@ -40,11 +40,15 @@ Made for everyone who loves a bit of fun and nostalgia, this project lets you re
 
 This project uses [Storybook](https://storybook.js.org/) for component development and testing.
 
-```bash
-# Start Storybook dev server
-pnpm storybook
+1. Start Storybook dev server
 
-# Build static Storybook
+```bash
+pnpm storybook
+```
+
+2. Build static Storybook
+
+```bash
 pnpm build-storybook
 ```
 
