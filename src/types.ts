@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 // Language Type
-export type Language = "cn" | "en";
+export type Language = "zh" | "en";
 
 // Fortune Interface
 export interface Fortune {
   id: number;
-  cn: string; // Chinese text
+  zh: string; // Chinese text
   en: string; // English text
 }
 

@@ -23,7 +23,7 @@ interface FillerCapsule {
 
 // Translations for machine labels
 const LABELS = {
-  cn: {
+  zh: {
     coinSlot: "投币口",
     spin: "点击旋转",
     exit: "取蛋口",

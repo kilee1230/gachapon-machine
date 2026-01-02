@@ -23,7 +23,7 @@ const STORAGE_KEYS = {
 
 // UI Text Dictionary
 const UI_TEXT = {
-  cn: {
+  zh: {
     title: "2026 马年大吉",
     subtitle: "新春扭蛋机 · 限量100份好运",
     drawn: "已抽取",
@@ -50,9 +50,9 @@ export default function App() {
   const [language, setLanguage] = useState<Language>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(STORAGE_KEYS.LANG) as Language;
-      return saved === "cn" || saved === "en" ? saved : "cn";
+      return saved === "zh" || saved === "en" ? saved : "zh";
     }
-    return "cn";
+    return "zh";
   });
 
   // 2. Fortune Pool (Lazy Init - Loads from LS immediately to prevent flash)
@@ -88,7 +88,7 @@ export default function App() {
 
   // Persist language changes
   const handleLanguageToggle = () => {
-    const newLang = language === "cn" ? "en" : "cn";
+    const newLang = language === "zh" ? "en" : "zh";
     setLanguage(newLang);
     localStorage.setItem(STORAGE_KEYS.LANG, newLang);
   };
@@ -213,7 +213,7 @@ export default function App() {
           "
         >
           <Globe size={18} />
-          <span>{language === "cn" ? "EN" : "中"}</span>
+          <span>{language === "zh" ? "EN" : "中"}</span>
         </button>
       </div>
 

@@ -8,10 +8,10 @@ interface Props {
 }
 
 const UI_TEXT = {
-  cn: {
+  zh: {
     collect: "收入囊中",
     year: "2026 · 丙午年",
-    horse: "馬"
+    horse: "馬",
   },
   en: {
     collect: "COLLECT",
@@ -26,8 +26,8 @@ export const ResultModal: React.FC<Props> = ({ fortune, onClose, language }) => 
   const ui = UI_TEXT[language];
 
   // Split fortune into title and content 
-  // CN uses '：', EN uses ': '
-  const separator = language === 'cn' ? '：' : ': ';
+  // ZH uses '：', EN uses ': '
+  const separator = language === "zh" ? "：" : ": ";
   const [title, content] = text.includes(separator) 
     ? text.split(separator) 
     : [text, ''];

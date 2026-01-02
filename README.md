@@ -1,20 +1,37 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 🐴 2026 Year of the Horse Gachapon Machine
 
-# Run and deploy your AI Studio app
+A fun, nostalgic gachapon (capsule toy) machine to celebrate the 2026 Lunar New Year!
 
-This contains everything you need to run your app locally.
+## ✨ About
 
-View your app in AI Studio: https://ai.studio/apps/drive/1UcRD81Bwm6W0TfPJTNWcEWNE9f50EMHz
+This project is dedicated to everyone who wants to have a little fun and relive childhood memories of playing with gachapon machines. Turn the knob, get a capsule, and receive a meaningful fortune message to kick start your new lunar new year with positivity and good vibes!
 
-## Run Locally
+## 🎯 Features
 
-**Prerequisites:**  Node.js
+- 🎰 Interactive gachapon machine with realistic animations
+- 🌏 Bilingual support (中文 / English)
+- 🎵 Festive background music
+- 📜 100 unique fortune messages
+- 📱 Mobile-friendly design
 
+## 🚀 Run Locally
+
+**Prerequisites:** Node.js, pnpm
 
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+
+   ```bash
+   pnpm install
+   ```
+
+2. Run the app:
+
+   ```bash
+   pnpm dev
+   ```
+
+3. Open http://localhost:3000 in your browser
+
+## 🧧 Happy Lunar New Year!
+
+May the Year of the Horse bring you good fortune, success, and happiness! 🐴🎊
