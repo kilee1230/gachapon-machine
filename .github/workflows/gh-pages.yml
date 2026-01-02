@@ -22,7 +22,7 @@ jobs:
         run_install: true
 
     - name: Install Playwright browsers
-      run: pnpm exec playwright install --with-deps chromium
+      run: npx playwright install --with-deps chromium
 
     - name: Build Storybook
       run: pnpm build-storybook
