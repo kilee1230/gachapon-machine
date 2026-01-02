@@ -8,6 +8,7 @@ interface Props {
   onSpin: () => void;
   onOpenCapsule: () => void;
   capsuleColor: string;
+  onCapsuleColorPicked: (color: string) => void;
   remainingCount: number;
   language: Language;
 }
@@ -47,6 +48,7 @@ export const GachaponMachine: React.FC<Props> = ({
   onSpin,
   onOpenCapsule,
   capsuleColor,
+  onCapsuleColorPicked,
   remainingCount,
   language,
 }) => {
@@ -64,14 +66,14 @@ export const GachaponMachine: React.FC<Props> = ({
 
   // Function to generate initial random capsules
   const generateCapsules = (count: number) => {
-    // Show max 22 visual capsules, but if count is lower (e.g. 3), show accurate count.
-    const visualCount = Math.min(count, 22);
+    // Show max 100 visual capsules to match fortune count
+    const visualCount = Math.min(count, 100);
     return Array.from({ length: visualCount }).map((_, i) => ({
       id: i,
-      left: `${15 + Math.random() * 65}%`,
-      top: `${55 + Math.random() * 35}%`, // Start at bottom
+      left: `${10 + Math.random() * 75}%`,
+      top: `${35 + Math.random() * 55}%`, // Fill more of the globe
       rotate: Math.random() * 60 - 30, // Subtle random rotation
-      color: ["#ef4444", "#eab308", "#3b82f6", "#22c55e", "#a855f7"][i % 5],
+      color: ["#ef4444", "#eab308", "#3b82f6", "#22c55e", "#a855f7", "#ec4899", "#f97316"][i % 7],
       zIndex: i,
     }));
   };
@@ -117,53 +119,35 @@ export const GachaponMachine: React.FC<Props> = ({
     return () => clearInterval(interval);
   }, [isSpinning]);
 
-  // Handle Capsule Logic: Color Sync and Removal
+  // Track which capsule index will be removed
+  const [capsuleToRemove, setCapsuleToRemove] = useState<number | null>(null);
+
+  // When spinning starts, pick a random capsule and notify parent of its color
   useEffect(() => {
-    if (isSpinning) {
-      // 1. Sleight of Hand: Ensure at least one capsule inside matches the dropped color.
-      // We do this immediately when spin starts. Since they are moving wildly, no one notices the color swap.
-      setFillerCapsules((prev) => {
-        if (prev.length === 0) return prev;
+    if (isSpinning && fillerCapsules.length > 0) {
+      const indexToRemove = Math.floor(Math.random() * fillerCapsules.length);
+      const pickedColor = fillerCapsules[indexToRemove].color;
+      setCapsuleToRemove(indexToRemove);
+      onCapsuleColorPicked(pickedColor);
+    }
+  }, [isSpinning]);
 
-        const hasColor = prev.some((c) => c.color === capsuleColor);
-        if (hasColor) return prev; // We already have a matching candidate
-
-        // No match found? Force the last one to become the target color.
-        const newCaps = [...prev];
-        const lastIndex = newCaps.length - 1;
-        newCaps[lastIndex] = { ...newCaps[lastIndex], color: capsuleColor };
-        return newCaps;
-      });
-
-      // 2. Schedule removal of that specific colored capsule
+  // Remove the picked capsule after spin animation completes
+  useEffect(() => {
+    if (isSpinning && capsuleToRemove !== null) {
       const timer = setTimeout(() => {
         setFillerCapsules((prev) => {
           if (prev.length === 0) return prev;
-
-          // Find the index of the matching color we ensured exists above
-          // We prioritize the highest ID (last added/modified) to be consistent with "top" or "last" logic
-          let indexToRemove = -1;
-          for (let i = prev.length - 1; i >= 0; i--) {
-            if (prev[i].color === capsuleColor) {
-              indexToRemove = i;
-              break;
-            }
-          }
-
           const newCaps = [...prev];
-          if (indexToRemove !== -1) {
-            newCaps.splice(indexToRemove, 1);
-          } else {
-            // Fallback (shouldn't happen due to step 1)
-            newCaps.pop();
-          }
+          newCaps.splice(capsuleToRemove, 1);
           return newCaps;
         });
+        setCapsuleToRemove(null);
       }, 1000);
 
       return () => clearTimeout(timer);
     }
-  }, [isSpinning, capsuleColor]);
+  }, [isSpinning, capsuleToRemove]);
 
   // Touch handlers for swipe gesture on dropped capsule
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -218,7 +202,7 @@ export const GachaponMachine: React.FC<Props> = ({
               <div
                 key={cap.id}
                 className={`
-                absolute w-12 h-12 rounded-full shadow-sm
+                absolute w-8 h-8 rounded-full shadow-sm
                 will-change-transform
                 ${
                   isSpinning

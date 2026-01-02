@@ -126,13 +126,17 @@ export default function App() {
     playSound("spin");
     setGameState("spinning");
 
-    const colors = ["#ef4444", "#eab308", "#3b82f6", "#22c55e", "#a855f7"];
-    setCapsuleColor(colors[Math.floor(Math.random() * colors.length)]);
+    // Color will be set by onCapsuleColorPicked callback from the machine
 
     setTimeout(() => {
       playSound("drop");
       setGameState("dropped");
     }, 2000);
+  };
+
+  // Called by GachaponMachine when it picks which capsule to dispense
+  const handleCapsuleColorPicked = (color: string) => {
+    setCapsuleColor(color);
   };
 
   const handleOpenCapsule = () => {
@@ -256,6 +260,7 @@ export default function App() {
             onSpin={handleSpin}
             onOpenCapsule={handleOpenCapsule}
             capsuleColor={capsuleColor}
+            onCapsuleColorPicked={handleCapsuleColorPicked}
             remainingCount={fortunePool.length}
             language={language}
           />
