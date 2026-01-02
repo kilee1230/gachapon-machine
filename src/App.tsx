@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { GachaponMachine } from "./components/GachaponMachine";
 import { ResultModal } from "./components/ResultModal";
-import { MusicPlayer } from "./components/MusicPlayer";
 import { FORTUNES } from "./data/fortunes";
 import { GameState, Fortune, Language } from "./types";
-import { Shuffle, Globe } from "lucide-react";
+import { Shuffle } from "lucide-react";
 
 // Sound effect URLs
 const SOUNDS = {
@@ -200,21 +199,36 @@ export default function App() {
 
   return (
     <div className="h-[100dvh] w-full flex flex-col items-center justify-between pt-12 pb-6 sm:py-6 text-white overflow-hidden relative touch-manipulation">
-      <MusicPlayer />
-
       {/* Language Toggle */}
-      <div className="fixed top-4 left-4 z-50">
-        <button
-          onClick={handleLanguageToggle}
-          className="
-            h-12 px-4 rounded-full border-2 border-white/20 bg-black/20 
-            flex items-center gap-2 backdrop-blur-sm shadow-lg
-            text-white/90 font-bold hover:bg-black/40 hover:scale-105 transition-all
-          "
-        >
-          <Globe size={18} />
-          <span>{language === "zh" ? "EN" : "中"}</span>
-        </button>
+      <div className="fixed top-4 right-4 z-50">
+        <div className="flex items-center bg-black/30 backdrop-blur-md rounded-full p-1 border border-white/10 shadow-lg">
+          <button
+            onClick={() => language !== "zh" && handleLanguageToggle()}
+            className={`
+              px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-300
+              ${
+                language === "zh"
+                  ? "bg-yellow-400 text-red-900 shadow-md"
+                  : "text-white/60 hover:text-white/90"
+              }
+            `}
+          >
+            中文
+          </button>
+          <button
+            onClick={() => language !== "en" && handleLanguageToggle()}
+            className={`
+              px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-300
+              ${
+                language === "en"
+                  ? "bg-yellow-400 text-red-900 shadow-md"
+                  : "text-white/60 hover:text-white/90"
+              }
+            `}
+          >
+            EN
+          </button>
+        </div>
       </div>
 
       {/* Header */}
