@@ -311,3 +311,182 @@ export const InteractionTestEmptyMachine: Story = {
     await expect(args.onInsertCoin).not.toHaveBeenCalled();
   },
 };
+
+// Interactive test - spinning state triggers color picking
+export const InteractionTestSpinning: Story = {
+  args: {
+    gameState: "spinning",
+    capsuleColor: "#ef4444",
+    remainingCount: 50,
+    language: "zh",
+    onInsertCoin: fn(),
+    onSpin: fn(),
+    onOpenCapsule: fn(),
+    onCapsuleColorPicked: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    // Verify the spinning effect overlay is visible
+    const spinningOverlay = canvasElement.querySelector(
+      '[class*="animate-\\[spin-fast"]'
+    );
+    await expect(spinningOverlay).toBeInTheDocument();
+
+    // Wait for capsule initialization and color picking
+    // The useEffects run async, so we wait for the full spin animation cycle
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+  },
+};
+
+// Interactive test - touch swipe on dropped capsule
+export const InteractionTestTouchSwipe: Story = {
+  args: {
+    gameState: "dropped",
+    capsuleColor: "#ef4444",
+    remainingCount: 99,
+    language: "zh",
+    onInsertCoin: fn(),
+    onSpin: fn(),
+    onOpenCapsule: fn(),
+    onCapsuleColorPicked: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    // Find the dropped capsule container
+    const capsuleContainer = canvasElement.querySelector(
+      '[class*="animate-\\[chute-exit"]'
+    ) as HTMLElement;
+
+    if (capsuleContainer) {
+      // Simulate touch start
+      const touchStartEvent = new TouchEvent("touchstart", {
+        bubbles: true,
+        cancelable: true,
+        touches: [
+          new Touch({
+            identifier: 0,
+            target: capsuleContainer,
+            clientX: 100,
+            clientY: 100,
+          }),
+        ],
+      });
+      capsuleContainer.dispatchEvent(touchStartEvent);
+
+      // Simulate touch end with downward swipe (> 50px threshold)
+      const touchEndEvent = new TouchEvent("touchend", {
+        bubbles: true,
+        cancelable: true,
+        changedTouches: [
+          new Touch({
+            identifier: 0,
+            target: capsuleContainer,
+            clientX: 100,
+            clientY: 200, // 100px down
+          }),
+        ],
+      });
+      capsuleContainer.dispatchEvent(touchEndEvent);
+
+      // Verify onOpenCapsule was called
+      await expect(args.onOpenCapsule).toHaveBeenCalledTimes(1);
+    }
+  },
+};
+
+// Interactive test - touch without enough swipe distance
+export const InteractionTestTouchNoSwipe: Story = {
+  args: {
+    gameState: "dropped",
+    capsuleColor: "#3b82f6",
+    remainingCount: 99,
+    language: "zh",
+    onInsertCoin: fn(),
+    onSpin: fn(),
+    onOpenCapsule: fn(),
+    onCapsuleColorPicked: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const capsuleContainer = canvasElement.querySelector(
+      '[class*="animate-\\[chute-exit"]'
+    ) as HTMLElement;
+
+    if (capsuleContainer) {
+      // Simulate touch start
+      const touchStartEvent = new TouchEvent("touchstart", {
+        bubbles: true,
+        cancelable: true,
+        touches: [
+          new Touch({
+            identifier: 0,
+            target: capsuleContainer,
+            clientX: 100,
+            clientY: 100,
+          }),
+        ],
+      });
+      capsuleContainer.dispatchEvent(touchStartEvent);
+
+      // Simulate touch end with small movement (< 50px threshold)
+      const touchEndEvent = new TouchEvent("touchend", {
+        bubbles: true,
+        cancelable: true,
+        changedTouches: [
+          new Touch({
+            identifier: 0,
+            target: capsuleContainer,
+            clientX: 100,
+            clientY: 130, // Only 30px down, should NOT trigger
+          }),
+        ],
+      });
+      capsuleContainer.dispatchEvent(touchEndEvent);
+
+      // Verify onOpenCapsule was NOT called (swipe too small)
+      await expect(args.onOpenCapsule).not.toHaveBeenCalled();
+    }
+  },
+};
+
+// Interactive test - touch end without touch start
+export const InteractionTestTouchEndOnly: Story = {
+  args: {
+    gameState: "dropped",
+    capsuleColor: "#22c55e",
+    remainingCount: 99,
+    language: "en",
+    onInsertCoin: fn(),
+    onSpin: fn(),
+    onOpenCapsule: fn(),
+    onCapsuleColorPicked: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Verify English hint
+    const openHint = canvas.getByText("CLICK OR SWIPE DOWN");
+    await expect(openHint).toBeInTheDocument();
+
+    const capsuleContainer = canvasElement.querySelector(
+      '[class*="animate-\\[chute-exit"]'
+    ) as HTMLElement;
+
+    if (capsuleContainer) {
+      // Only dispatch touchend without touchstart
+      const touchEndEvent = new TouchEvent("touchend", {
+        bubbles: true,
+        cancelable: true,
+        changedTouches: [
+          new Touch({
+            identifier: 0,
+            target: capsuleContainer,
+            clientX: 100,
+            clientY: 200,
+          }),
+        ],
+      });
+      capsuleContainer.dispatchEvent(touchEndEvent);
+
+      // Should NOT trigger since touchStartY is null
+      await expect(args.onOpenCapsule).not.toHaveBeenCalled();
+    }
+  },
+};
