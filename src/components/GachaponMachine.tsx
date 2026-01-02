@@ -73,7 +73,15 @@ export const GachaponMachine: React.FC<Props> = ({
       left: `${10 + Math.random() * 75}%`,
       top: `${35 + Math.random() * 55}%`, // Fill more of the globe
       rotate: Math.random() * 60 - 30, // Subtle random rotation
-      color: ["#ef4444", "#eab308", "#3b82f6", "#22c55e", "#a855f7", "#ec4899", "#f97316"][i % 7],
+      color: [
+        "#ef4444",
+        "#eab308",
+        "#3b82f6",
+        "#22c55e",
+        "#a855f7",
+        "#ec4899",
+        "#f97316",
+      ][i % 7],
       zIndex: i,
     }));
   };
@@ -288,11 +296,19 @@ export const GachaponMachine: React.FC<Props> = ({
                 <div className="w-1.5 h-8 bg-black rounded-full shadow-[inset_0_0_2px_rgba(255,255,255,0.3)] border border-gray-700"></div>
               </button>
 
-              {/* Animated Coin */}
+              {/* Animated Coin - RM1 Token Style */}
               {isInserting && (
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 border border-yellow-700 flex items-center justify-center text-xs font-bold text-yellow-900 shadow-lg animate-[coin-drop_0.8s_forwards] pointer-events-none">
-                  <div className="w-6 h-6 rounded-full border border-yellow-500/50 flex items-center justify-center">
-                    <span className="scale-75">2026</span>
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-600 border-2 border-amber-700 flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.4),inset_0_1px_2px_rgba(255,255,255,0.5)] animate-[coin-drop_0.8s_forwards] pointer-events-none">
+                  {/* Outer ring pattern */}
+                  <div className="absolute inset-0.5 rounded-full border border-amber-500/40"></div>
+                  {/* Inner circle with RM1 */}
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 border border-amber-600/50 flex flex-col items-center justify-center shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]">
+                    <span className="text-[8px] font-bold text-amber-900/80 leading-none">
+                      RM
+                    </span>
+                    <span className="text-sm font-black text-amber-900 leading-none -mt-0.5">
+                      1
+                    </span>
                   </div>
                 </div>
               )}
