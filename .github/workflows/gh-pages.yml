@@ -54,8 +54,14 @@ jobs:
         version: 9
         run_install: true
 
-    - name: Build
+    - name: Build App
       run: pnpm build
+
+    - name: Build Storybook
+      run: pnpm build-storybook
+
+    - name: Copy Storybook to dist
+      run: cp -r storybook-static dist/storybook
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v4.0.0
