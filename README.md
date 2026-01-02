@@ -2,7 +2,7 @@
 
 [![GitHub Pages](https://img.shields.io/badge/demo-live-brightgreen)](https://kilee1230.github.io/gachapon-machine/)
 [![Storybook](https://img.shields.io/badge/📖_storybook-docs-ff4785)](https://kilee1230.github.io/gachapon-machine/storybook/)
-[![Coverage](https://img.shields.io/badge/coverage-71%25-yellow)](https://github.com/kilee1230/gachapon-machine/actions)
+[![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)](https://github.com/kilee1230/gachapon-machine/actions)
 
 A fun, nostalgic gachapon (capsule toy) machine to celebrate the 2026 Lunar New Year!
 
