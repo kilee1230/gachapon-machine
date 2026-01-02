@@ -15,8 +15,8 @@ interface Props {
 
 interface FillerCapsule {
   id: number;
-  left: string;
-  top: string;
+  x: number; // percentage 0-100
+  y: number; // percentage 0-100
   rotate: number;
   color: string;
   zIndex: number;
@@ -70,8 +70,8 @@ export const GachaponMachine: React.FC<Props> = ({
     const visualCount = Math.min(count, 100);
     return Array.from({ length: visualCount }).map((_, i) => ({
       id: i,
-      left: `${10 + Math.random() * 75}%`,
-      top: `${35 + Math.random() * 55}%`, // Fill more of the globe
+      x: 10 + Math.random() * 75, // percentage
+      y: 35 + Math.random() * 55, // percentage - fill more of the globe
       rotate: Math.random() * 60 - 30, // Subtle random rotation
       color: [
         "#ef4444",
@@ -93,23 +93,32 @@ export const GachaponMachine: React.FC<Props> = ({
 
   // Handle Physics (Chaos when spinning, Gravity when stopped)
   useEffect(() => {
-    let interval: number;
+    let animationId: number;
 
     if (isSpinning) {
-      // CHAOS: Shuffle positions rapidly to simulate churning
-      interval = window.setInterval(() => {
-        setFillerCapsules((prev) =>
-          prev.map((cap) => ({
-            ...cap,
-            // Random positions throughout the globe
-            left: `${10 + Math.random() * 75}%`,
-            top: `${15 + Math.random() * 65}%`,
-            // Wild rotation
-            rotate: cap.rotate + (Math.random() * 180 - 90),
-            zIndex: Math.floor(Math.random() * 50),
-          }))
-        );
-      }, 100); // 10 updates per second for jerky/fast physics
+      // Use requestAnimationFrame for smoother animation on mobile
+      let lastUpdate = 0;
+      const updateInterval = 80; // ~12fps for chaotic effect (smoother than 100ms setInterval)
+
+      const animate = (timestamp: number) => {
+        if (timestamp - lastUpdate >= updateInterval) {
+          lastUpdate = timestamp;
+          setFillerCapsules((prev) =>
+            prev.map((cap) => ({
+              ...cap,
+              // Random positions throughout the globe
+              x: 10 + Math.random() * 75,
+              y: 15 + Math.random() * 65,
+              // Wild rotation
+              rotate: cap.rotate + (Math.random() * 180 - 90),
+              zIndex: Math.floor(Math.random() * 50),
+            }))
+          );
+        }
+        animationId = requestAnimationFrame(animate);
+      };
+
+      animationId = requestAnimationFrame(animate);
     } else {
       // GRAVITY: Settle back to bottom when stopping
       setFillerCapsules((prev) => {
@@ -117,14 +126,16 @@ export const GachaponMachine: React.FC<Props> = ({
         return prev.map((cap) => ({
           ...cap,
           // Settle range
-          left: `${15 + Math.random() * 65}%`,
-          top: `${55 + Math.random() * 35}%`,
+          x: 15 + Math.random() * 65,
+          y: 55 + Math.random() * 35,
           rotate: Math.random() * 60 - 30, // Settle rotation
         }));
       });
     }
 
-    return () => clearInterval(interval);
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    };
   }, [isSpinning]);
 
   // Track which capsule index will be removed
@@ -209,29 +220,24 @@ export const GachaponMachine: React.FC<Props> = ({
             fillerCapsules.map((cap) => (
               <div
                 key={cap.id}
-                className={`
-                absolute w-8 h-8 rounded-full shadow-sm
-                will-change-transform
-                ${
-                  isSpinning
-                    ? "transition-all duration-100 ease-linear"
-                    : "transition-all duration-[800ms] cubic-bezier(0.34, 1.56, 0.64, 1)"
-                }
-              `}
+                className="absolute w-8 h-8 rounded-full will-change-transform backface-visibility-hidden"
                 style={{
-                  left: cap.left,
-                  top: cap.top,
+                  left: `${cap.x}%`,
+                  top: `${cap.y}%`,
                   zIndex: cap.zIndex,
-                  transform: `rotate(${cap.rotate}deg)`,
+                  transform: `translate3d(0, 0, 0) rotate(${cap.rotate}deg)`,
+                  transition: isSpinning
+                    ? "none"
+                    : "left 0.7s ease-out, top 0.7s ease-out, transform 0.7s ease-out",
                 }}
               >
                 {/* Inner visual of the capsule */}
                 <div
-                  className={`w-full h-full rounded-full border border-black/5 overflow-hidden shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.1)]`}
+                  className="w-full h-full rounded-full border border-black/5 overflow-hidden"
                   style={{ backgroundColor: cap.color }}
                 >
                   {/* Glossy reflection */}
-                  <div className="w-full h-1/2 bg-white/40 rounded-t-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.7)]"></div>
+                  <div className="w-full h-1/2 bg-white/40 rounded-t-full"></div>
                 </div>
               </div>
             ))}
