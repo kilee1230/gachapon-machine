@@ -199,17 +199,17 @@ export default function App() {
 
   return (
     <div className="h-[100dvh] w-full flex flex-col items-center justify-between pt-12 pb-6 sm:py-6 text-white overflow-hidden relative touch-manipulation">
-      {/* Language Toggle */}
-      <div className="fixed top-4 right-4 z-50">
-        <div className="flex items-center bg-black/30 backdrop-blur-md rounded-full p-1 border border-white/10 shadow-lg">
+      {/* Language Toggle - positioned in header area */}
+      <div className="absolute top-3 right-3 z-50">
+        <div className="flex items-center bg-black/20 backdrop-blur-sm rounded-full p-0.5 border border-white/10 shadow-md">
           <button
             onClick={() => language !== "zh" && handleLanguageToggle()}
             className={`
-              px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-300
+              px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-300
               ${
                 language === "zh"
-                  ? "bg-yellow-400 text-red-900 shadow-md"
-                  : "text-white/60 hover:text-white/90"
+                  ? "bg-yellow-400 text-red-900 shadow-sm"
+                  : "text-white/50 hover:text-white/80"
               }
             `}
           >
@@ -218,11 +218,11 @@ export default function App() {
           <button
             onClick={() => language !== "en" && handleLanguageToggle()}
             className={`
-              px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-300
+              px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-300
               ${
                 language === "en"
-                  ? "bg-yellow-400 text-red-900 shadow-md"
-                  : "text-white/60 hover:text-white/90"
+                  ? "bg-yellow-400 text-red-900 shadow-sm"
+                  : "text-white/50 hover:text-white/80"
               }
             `}
           >
