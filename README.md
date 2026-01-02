@@ -54,23 +54,17 @@ Open http://localhost:6006 to view components in Storybook.
 
 Run interaction tests with coverage:
 
-```bash
-# Start Storybook first (in a separate terminal)
-pnpm storybook
+1. Start Storybook first (in a separate terminal)
 
-# Run tests with coverage report
-pnpm test-storybook:coverage
+```bash
+pnpm storybook
 ```
 
-Coverage report will be generated in `coverage/html/` and printed to terminal.
+2. Run tests with coverage report
 
-| Component       | Statements | Branches | Functions | Lines   |
-| --------------- | ---------- | -------- | --------- | ------- |
-| Capsule         | 100%       | 100%     | 100%      | 100%    |
-| ResultModal     | 100%       | 100%     | 100%      | 100%    |
-| GachaponMachine | 68%        | 88%      | 73%       | 68%     |
-| MusicPlayer     | 66%        | 71%      | 50%       | 69%     |
-| **Overall**     | **71%**    | **89%**  | **68%**   | **72%** |
+```bash
+pnpm test-storybook:coverage
+```
 
 ## 🎵 Music Credit
 
