@@ -214,7 +214,7 @@ export default function App() {
 
       {/* Language Toggle - positioned in header area */}
       <div className="absolute top-3 right-3 z-50">
-        <div className="flex items-center bg-black/20 backdrop-blur-sm rounded-full p-0.5 border border-white/10 shadow-md">
+        <div className="flex items-center bg-black/40 rounded-full p-0.5 border border-white/10 shadow-md">
           <button
             onClick={() => language !== "zh" && handleLanguageToggle()}
             className={`
@@ -274,7 +274,7 @@ export default function App() {
 
       {/* Footer Info */}
       <footer className="text-center text-red-200 text-xs font-light shrink-0 z-10 sm:mb-0">
-        <p className="bg-black/20 px-4 py-1.5 rounded-full inline-block backdrop-blur-sm border border-white/5">
+        <p className="bg-black/40 px-4 py-1.5 rounded-full inline-block border border-white/5">
           {text.drawn} {drawnCount} / {MAX_CAPSULES}
         </p>
         <button
