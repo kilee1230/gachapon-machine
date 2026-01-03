@@ -208,7 +208,7 @@ export const GachaponMachine: React.FC<Props> = ({
         </div>
 
         {/* Glass Window */}
-        <div className="relative w-64 h-64 mt-8 bg-gradient-to-br from-blue-100/20 to-blue-500/5 rounded-full border-[6px] border-white/30 shadow-[inset_0_0_20px_rgba(255,255,255,0.3),0_10px_20px_rgba(0,0,0,0.2)] overflow-hidden backdrop-blur-[2px] z-10">
+        <div className="relative w-64 h-64 mt-8 bg-gradient-to-br from-blue-100/30 to-blue-500/10 rounded-full border-[6px] border-white/30 shadow-[inset_0_0_20px_rgba(255,255,255,0.3),0_10px_20px_rgba(0,0,0,0.2)] overflow-hidden z-10">
           {/* Main Reflection Highlight */}
           <div className="absolute top-6 left-6 w-20 h-10 bg-gradient-to-br from-white/60 to-transparent rounded-full -rotate-45 blur-[1px] z-20 pointer-events-none"></div>
 
@@ -244,14 +244,14 @@ export const GachaponMachine: React.FC<Props> = ({
 
           {/* SPINNING EFFECT OVERLAY */}
           {isSpinning && (
-            <div className="absolute inset-0 z-30 pointer-events-none rounded-full overflow-hidden">
+            <div className="absolute inset-0 z-30 pointer-events-none rounded-full overflow-hidden isolate">
               {/* Swirl 1: White Speed Streaks / Motion Blur */}
               <div className="absolute inset-0 animate-[spin-fast_0.5s_linear_infinite]">
                 <div className="w-full h-full rounded-full border-t-[30px] border-l-[15px] border-transparent border-t-white/30 border-l-white/10 blur-[3px]"></div>
               </div>
 
               {/* Swirl 2: Reverse Colored Hue (subtle rainbow/festive hint) */}
-              <div className="absolute inset-0 animate-[spin-fast_0.7s_linear_infinite_reverse] opacity-40 mix-blend-overlay">
+              <div className="absolute inset-0 animate-[spin-fast_0.7s_linear_infinite_reverse] opacity-40">
                 <div className="w-full h-full rounded-full bg-[conic-gradient(from_0deg,transparent,rgba(250,204,21,0.6),transparent,rgba(239,68,68,0.6),transparent)] blur-xl"></div>
               </div>
             </div>
