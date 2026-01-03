@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { within, userEvent, expect } from "@storybook/test";
+import { within, expect } from "@storybook/test";
 import { Capsule } from "./Capsule";
 
 const meta = {
@@ -85,6 +85,10 @@ export const OrangeCapsule: Story = {
 
 // All capsule colors showcase
 export const AllColors: Story = {
+  args: {
+    color: "#ef4444",
+    isOpen: false,
+  },
   render: () => (
     <div className="flex gap-4 flex-wrap">
       {[
@@ -143,6 +147,67 @@ export const InteractionTestOpen: Story = {
     const paperScroll = canvasElement.querySelector(
       '[class*="bg-\\[\\#fff1f1\\]"]'
     );
+    if (paperScroll) {
+      const style = window.getComputedStyle(paperScroll);
+      await expect(style.opacity).toBe("1");
+    }
+  },
+};
+
+// Interactive test - verify capsule halves have animation classes
+export const InteractionTestAnimationClasses: Story = {
+  args: {
+    color: "#ef4444",
+    isOpen: false,
+  },
+  play: async ({ canvasElement }) => {
+    // Verify the top half has transition classes
+    const topHalf = canvasElement.querySelector(".rounded-t-full");
+    await expect(topHalf).toBeInTheDocument();
+    await expect(topHalf).toHaveClass("transition-all");
+    await expect(topHalf).toHaveClass("duration-700");
+
+    // Verify the bottom half has transition classes
+    const bottomHalf = canvasElement.querySelector(".rounded-b-full");
+    await expect(bottomHalf).toBeInTheDocument();
+    await expect(bottomHalf).toHaveClass("transition-all");
+    await expect(bottomHalf).toHaveClass("duration-700");
+  },
+};
+
+// Interactive test - verify open state transforms
+export const InteractionTestOpenTransforms: Story = {
+  args: {
+    color: "#a855f7",
+    isOpen: true,
+  },
+  play: async ({ canvasElement }) => {
+    // Wait for animation to settle
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    // Verify top half has transformed (opacity should be 0 after animation)
+    const topHalf = canvasElement.querySelector(
+      ".rounded-t-full"
+    ) as HTMLElement;
+    if (topHalf) {
+      const style = window.getComputedStyle(topHalf);
+      // The transform should include translate and rotate
+      await expect(style.transform).not.toBe("none");
+    }
+
+    // Verify bottom half has transformed
+    const bottomHalf = canvasElement.querySelector(
+      ".rounded-b-full"
+    ) as HTMLElement;
+    if (bottomHalf) {
+      const style = window.getComputedStyle(bottomHalf);
+      await expect(style.transform).not.toBe("none");
+    }
+
+    // Verify paper scroll is visible
+    const paperScroll = canvasElement.querySelector(
+      '[class*="bg-\\[\\#fff1f1\\]"]'
+    ) as HTMLElement;
     if (paperScroll) {
       const style = window.getComputedStyle(paperScroll);
       await expect(style.opacity).toBe("1");
