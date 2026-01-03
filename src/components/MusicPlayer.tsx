@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Volume2, VolumeX, Play } from "lucide-react";
 
 const AUDIO_SRC = new URL("/audio/chinese-new-year-284910.mp3", import.meta.url)
@@ -8,6 +8,34 @@ export const MusicPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const wasPlayingBeforeHidden = useRef(false);
+
+  // Pause music when tab loses focus, resume when tab gains focus
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      if (document.hidden) {
+        // Tab is hidden - remember if we were playing and pause
+        wasPlayingBeforeHidden.current = isPlaying;
+        if (isPlaying) {
+          audio.pause();
+          setIsPlaying(false);
+        }
+      } else {
+        // Tab is visible - resume if we were playing before
+        if (wasPlayingBeforeHidden.current) {
+          audio.play().then(() => setIsPlaying(true)).catch(() => {});
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [isPlaying]);
 
   const startPlaying = useCallback(() => {
     const audio = audioRef.current;
