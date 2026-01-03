@@ -5,9 +5,6 @@ on:
   push:
     branches:
     - "**" # Run tests on all branches
-  pull_request:
-    branches:
-    - main
 
 permissions:
   contents: write
@@ -44,6 +41,7 @@ jobs:
       with:
         name: coverage-report
         path: coverage/html/
+        retention-days: 14
 
   deploy:
     runs-on: ubuntu-latest
