@@ -273,24 +273,25 @@ export default function App() {
       </main>
 
       {/* Footer Info */}
-      <footer className="text-center text-red-200 text-xs font-light shrink-0 z-10 mb-2 sm:mb-0">
+      <footer className="text-center text-red-200 text-xs font-light shrink-0 z-10 sm:mb-0">
         <p className="bg-black/20 px-4 py-1.5 rounded-full inline-block backdrop-blur-sm border border-white/5">
           {text.drawn} {drawnCount} / {MAX_CAPSULES}
         </p>
         <button
           onClick={handleFullReset}
-          className="mt-3 flex items-center gap-1 mx-auto opacity-60 hover:opacity-100 transition-opacity p-2 active:scale-95 uppercase"
+          className="mt-1 flex items-center gap-1 mx-auto opacity-60 hover:opacity-100 transition-opacity p-2 active:scale-95 uppercase"
         >
           <Shuffle size={14} /> {text.reset}
         </button>
-        {/* Build Info */}
-        {import.meta.env.VITE_BUILD_NUMBER && (
-          <p className="mt-2 text-[10px] text-white/30 font-mono">
-            Build #{import.meta.env.VITE_BUILD_NUMBER} •{" "}
-            {String(import.meta.env.VITE_COMMIT_SHA).slice(0, 7)}
-          </p>
-        )}
       </footer>
+
+      {/* Build Info*/}
+      {import.meta.env.VITE_BUILD_NUMBER && (
+        <p className="fixed bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-white/30 font-mono z-10">
+          Build #{import.meta.env.VITE_BUILD_NUMBER} •{" "}
+          {String(import.meta.env.VITE_COMMIT_SHA).slice(0, 7)}
+        </p>
+      )}
 
       {/* Result Modal */}
       {gameState === "result" && currentFortune && (
