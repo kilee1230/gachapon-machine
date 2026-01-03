@@ -79,7 +79,7 @@ export const MusicPlayer: React.FC = () => {
       {showOverlay && (
         <div
           onClick={handleOverlayClick}
-          className="fixed inset-0 z-[100] bg-gradient-to-b from-red-900 to-red-950 flex items-center justify-center cursor-pointer"
+          className="fixed inset-0 z-[100] bg-gradient-to-b from-red-900/95 to-red-950/95 backdrop-blur-sm flex items-center justify-center cursor-pointer"
         >
           <div className="text-center">
             {/* Decorative elements */}
@@ -109,7 +109,7 @@ export const MusicPlayer: React.FC = () => {
         className={`
           fixed bottom-4 right-4 z-50
           w-10 h-10 rounded-full border-2 shadow-lg transition-all duration-300
-          flex items-center justify-center cursor-pointer
+          flex items-center justify-center backdrop-blur-sm cursor-pointer
           ${
             isPlaying
               ? "bg-yellow-400/90 text-red-900 border-yellow-500 shadow-[0_0_12px_rgba(250,204,21,0.5)]"
