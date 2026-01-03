@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { within, userEvent, expect, fn } from "@storybook/test";
 import { ResultModal } from "./ResultModal";
-import type { Fortune, Language } from "../types";
+import type { Fortune } from "../types";
 
 const mockFortune: Fortune = {
   id: 1,
@@ -166,5 +166,3 @@ export const InteractionTestContentDisplay: Story = {
     await expect(year).toBeInTheDocument();
   },
 };
-
-

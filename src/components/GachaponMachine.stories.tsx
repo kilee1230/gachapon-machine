@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { within, userEvent, expect, fn } from "@storybook/test";
 import { GachaponMachine } from "./GachaponMachine";
-import type { GameState, Language } from "../types";
 
 const meta = {
   title: "Components/GachaponMachine",
@@ -114,6 +113,34 @@ export const CapsuleOpening: Story = {
   args: {
     ...Idle.args,
     gameState: "opening",
+  },
+};
+
+// Test that capsule stays rendered during opening state (for animation)
+export const InteractionTestCapsuleOpeningState: Story = {
+  args: {
+    gameState: "opening",
+    capsuleColor: "#ef4444",
+    remainingCount: 99,
+    language: "zh",
+    onInsertCoin: fn(),
+    onSpin: fn(),
+    onOpenCapsule: fn(),
+    onCapsuleColorPicked: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify the capsule button is still rendered in opening state (for animation)
+    const capsuleButton = canvas.getByRole("button", { name: "Open capsule" });
+    await expect(capsuleButton).toBeInTheDocument();
+
+    // Verify it's disabled during opening state
+    await expect(capsuleButton).toBeDisabled();
+
+    // Verify hint tooltip is NOT shown in opening state
+    const openHint = canvas.queryByText("点击或下滑打开");
+    await expect(openHint).not.toBeInTheDocument();
   },
 };
 
@@ -244,15 +271,13 @@ export const InteractionTestOpenCapsule: Story = {
     const openHint = canvas.getByText("点击或下滑打开");
     await expect(openHint).toBeInTheDocument();
 
-    // Find the dropped capsule container and click it
-    const capsuleContainer = canvasElement.querySelector(
-      '[class*="animate-\\[chute-exit"]'
-    );
-    if (capsuleContainer) {
-      await userEvent.click(capsuleContainer);
-      // Verify onOpenCapsule was called
-      await expect(args.onOpenCapsule).toHaveBeenCalledTimes(1);
-    }
+    // Find the capsule button by aria-label and click it
+    const capsuleButton = canvas.getByRole("button", { name: "Open capsule" });
+    await expect(capsuleButton).toBeInTheDocument();
+    await userEvent.click(capsuleButton);
+
+    // Verify onOpenCapsule was called
+    await expect(args.onOpenCapsule).toHaveBeenCalledTimes(1);
   },
 };
 
@@ -350,45 +375,46 @@ export const InteractionTestTouchSwipe: Story = {
     onCapsuleColorPicked: fn(),
   },
   play: async ({ canvasElement, args }) => {
-    // Find the dropped capsule container
-    const capsuleContainer = canvasElement.querySelector(
-      '[class*="animate-\\[chute-exit"]'
-    ) as HTMLElement;
+    const canvas = within(canvasElement);
 
-    if (capsuleContainer) {
-      // Simulate touch start
-      const touchStartEvent = new TouchEvent("touchstart", {
-        bubbles: true,
-        cancelable: true,
-        touches: [
-          new Touch({
-            identifier: 0,
-            target: capsuleContainer,
-            clientX: 100,
-            clientY: 100,
-          }),
-        ],
-      });
-      capsuleContainer.dispatchEvent(touchStartEvent);
+    // Find the capsule button
+    const capsuleButton = canvas.getByRole("button", {
+      name: "Open capsule",
+    }) as HTMLElement;
+    await expect(capsuleButton).toBeInTheDocument();
 
-      // Simulate touch end with downward swipe (> 50px threshold)
-      const touchEndEvent = new TouchEvent("touchend", {
-        bubbles: true,
-        cancelable: true,
-        changedTouches: [
-          new Touch({
-            identifier: 0,
-            target: capsuleContainer,
-            clientX: 100,
-            clientY: 200, // 100px down
-          }),
-        ],
-      });
-      capsuleContainer.dispatchEvent(touchEndEvent);
+    // Simulate touch start
+    const touchStartEvent = new TouchEvent("touchstart", {
+      bubbles: true,
+      cancelable: true,
+      touches: [
+        new Touch({
+          identifier: 0,
+          target: capsuleButton,
+          clientX: 100,
+          clientY: 100,
+        }),
+      ],
+    });
+    capsuleButton.dispatchEvent(touchStartEvent);
 
-      // Verify onOpenCapsule was called
-      await expect(args.onOpenCapsule).toHaveBeenCalledTimes(1);
-    }
+    // Simulate touch end with downward swipe (> 50px threshold)
+    const touchEndEvent = new TouchEvent("touchend", {
+      bubbles: true,
+      cancelable: true,
+      changedTouches: [
+        new Touch({
+          identifier: 0,
+          target: capsuleButton,
+          clientX: 100,
+          clientY: 200, // 100px down
+        }),
+      ],
+    });
+    capsuleButton.dispatchEvent(touchEndEvent);
+
+    // Verify onOpenCapsule was called
+    await expect(args.onOpenCapsule).toHaveBeenCalledTimes(1);
   },
 };
 
@@ -405,44 +431,46 @@ export const InteractionTestTouchNoSwipe: Story = {
     onCapsuleColorPicked: fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const capsuleContainer = canvasElement.querySelector(
-      '[class*="animate-\\[chute-exit"]'
-    ) as HTMLElement;
+    const canvas = within(canvasElement);
 
-    if (capsuleContainer) {
-      // Simulate touch start
-      const touchStartEvent = new TouchEvent("touchstart", {
-        bubbles: true,
-        cancelable: true,
-        touches: [
-          new Touch({
-            identifier: 0,
-            target: capsuleContainer,
-            clientX: 100,
-            clientY: 100,
-          }),
-        ],
-      });
-      capsuleContainer.dispatchEvent(touchStartEvent);
+    // Find the capsule button
+    const capsuleButton = canvas.getByRole("button", {
+      name: "Open capsule",
+    }) as HTMLElement;
+    await expect(capsuleButton).toBeInTheDocument();
 
-      // Simulate touch end with small movement (< 50px threshold)
-      const touchEndEvent = new TouchEvent("touchend", {
-        bubbles: true,
-        cancelable: true,
-        changedTouches: [
-          new Touch({
-            identifier: 0,
-            target: capsuleContainer,
-            clientX: 100,
-            clientY: 130, // Only 30px down, should NOT trigger
-          }),
-        ],
-      });
-      capsuleContainer.dispatchEvent(touchEndEvent);
+    // Simulate touch start
+    const touchStartEvent = new TouchEvent("touchstart", {
+      bubbles: true,
+      cancelable: true,
+      touches: [
+        new Touch({
+          identifier: 0,
+          target: capsuleButton,
+          clientX: 100,
+          clientY: 100,
+        }),
+      ],
+    });
+    capsuleButton.dispatchEvent(touchStartEvent);
 
-      // Verify onOpenCapsule was NOT called (swipe too small)
-      await expect(args.onOpenCapsule).not.toHaveBeenCalled();
-    }
+    // Simulate touch end with small movement (< 50px threshold)
+    const touchEndEvent = new TouchEvent("touchend", {
+      bubbles: true,
+      cancelable: true,
+      changedTouches: [
+        new Touch({
+          identifier: 0,
+          target: capsuleButton,
+          clientX: 100,
+          clientY: 130, // Only 30px down, should NOT trigger
+        }),
+      ],
+    });
+    capsuleButton.dispatchEvent(touchEndEvent);
+
+    // Verify onOpenCapsule was NOT called (swipe too small)
+    await expect(args.onOpenCapsule).not.toHaveBeenCalled();
   },
 };
 
@@ -465,28 +493,28 @@ export const InteractionTestTouchEndOnly: Story = {
     const openHint = canvas.getByText("CLICK OR SWIPE DOWN");
     await expect(openHint).toBeInTheDocument();
 
-    const capsuleContainer = canvasElement.querySelector(
-      '[class*="animate-\\[chute-exit"]'
-    ) as HTMLElement;
+    // Find the capsule button
+    const capsuleButton = canvas.getByRole("button", {
+      name: "Open capsule",
+    }) as HTMLElement;
+    await expect(capsuleButton).toBeInTheDocument();
 
-    if (capsuleContainer) {
-      // Only dispatch touchend without touchstart
-      const touchEndEvent = new TouchEvent("touchend", {
-        bubbles: true,
-        cancelable: true,
-        changedTouches: [
-          new Touch({
-            identifier: 0,
-            target: capsuleContainer,
-            clientX: 100,
-            clientY: 200,
-          }),
-        ],
-      });
-      capsuleContainer.dispatchEvent(touchEndEvent);
+    // Only dispatch touchend without touchstart
+    const touchEndEvent = new TouchEvent("touchend", {
+      bubbles: true,
+      cancelable: true,
+      changedTouches: [
+        new Touch({
+          identifier: 0,
+          target: capsuleButton,
+          clientX: 100,
+          clientY: 200,
+        }),
+      ],
+    });
+    capsuleButton.dispatchEvent(touchEndEvent);
 
-      // Should NOT trigger since touchStartY is null
-      await expect(args.onOpenCapsule).not.toHaveBeenCalled();
-    }
+    // Should NOT trigger since touchStartY is null
+    await expect(args.onOpenCapsule).not.toHaveBeenCalled();
   },
 };

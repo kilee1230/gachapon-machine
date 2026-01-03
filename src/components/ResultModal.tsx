@@ -42,8 +42,15 @@ export const ResultModal: React.FC<Props> = ({ fortune, onClose, language }) => 
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
         
         {/* Top Decoration */}
-        <div className="h-6 sm:h-8 bg-red-600 w-full shrink-0 flex items-center justify-center">
-             <div className="w-16 h-1 bg-yellow-400 rounded-full"></div>
+        <div className="h-6 sm:h-8 bg-red-600 w-full shrink-0 flex items-center justify-center relative">
+          <div className="w-16 h-1 bg-yellow-400 rounded-full"></div>
+          {/* Close Button (Icon) */}
+          <button 
+            onClick={onClose}
+            className="absolute right-2 text-white/80 hover:text-white font-bold text-xl leading-none"
+          >
+            ×
+          </button>
         </div>
 
         <div className="p-6 sm:p-8 flex flex-col items-center text-center relative flex-1">
@@ -69,13 +76,6 @@ export const ResultModal: React.FC<Props> = ({ fortune, onClose, language }) => 
         {/* Bottom Decoration */}
         <div className="h-4 bg-red-600 w-full mt-auto shrink-0"></div>
 
-        {/* Close Button (Icon) */}
-        <button 
-            onClick={onClose}
-            className="absolute top-1 right-1 sm:top-2 sm:right-2 text-white/80 hover:text-white font-bold text-xl px-2 py-1 z-10"
-        >
-            ×
-        </button>
       </div>
 
       {/* Action Button - Positioned fixed bottom or below content */}

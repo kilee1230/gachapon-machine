@@ -65,7 +65,6 @@ export const Capsule: React.FC<Props> = ({ color, isOpen }) => {
         style={{ opacity: isOpen ? 0 : 1 }}
       ></div>
 
-      {/* Paper Scroll Pop-out */}
       <div
         className={`
           absolute top-1/2 left-1/2 w-10 h-6 bg-[#fff1f1] border border-red-200 

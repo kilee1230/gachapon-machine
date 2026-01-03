@@ -371,47 +371,46 @@ export const GachaponMachine: React.FC<Props> = ({
       </div>
 
       {/* Dropped Capsule Area */}
-      {/* Increased height to allow better separation and landing visual */}
       <div className="relative h-36 w-full flex justify-center items-end -mt-6 z-30 perspective-500 pointer-events-none">
-        {/* Container for capsule + shadow */}
         <div className="pointer-events-auto relative flex flex-col items-center pb-0">
-          {/* Render Dropped State */}
-          {isDropped && (
+          {/* Render Dropped & Opening States - Keep same Capsule instance for animation */}
+          {(isDropped || gameState === "opening") && (
             <>
-              {/* The Capsule - Animate from chute (Right) */}
-              {/* Wrapping div carries the trajectory animation */}
-              <div
-                onClick={onOpenCapsule}
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-                className="relative z-10 cursor-pointer animate-[chute-exit_0.8s_forwards] origin-center hover:scale-105 transition-transform touch-none"
+              {/* The Capsule - Animate from chute, then open animation */}
+              <button
+                onClick={isDropped ? onOpenCapsule : undefined}
+                onTouchStart={isDropped ? handleTouchStart : undefined}
+                onTouchEnd={isDropped ? handleTouchEnd : undefined}
+                disabled={gameState === "opening"}
+                className={`
+                  relative z-10 origin-center transition-transform touch-none bg-transparent border-none p-0
+                  ${
+                    isDropped
+                      ? "cursor-pointer animate-[chute-exit_0.8s_forwards] hover:scale-105"
+                      : ""
+                  }
+                `}
+                aria-label="Open capsule"
               >
                 {/* Inner div provides static tilt for realistic landing pose */}
                 <div className="rotate-[15deg] transform-gpu">
-                  <Capsule color={capsuleColor} isOpen={false} />
+                  <Capsule
+                    color={capsuleColor}
+                    isOpen={gameState === "opening"}
+                  />
                 </div>
-              </div>
+              </button>
 
-              {/* Shadow on 'ground' - Animate from chute (Right) */}
+              {/* Shadow on 'ground' */}
               <div className="absolute bottom-1 left-1/2 w-16 h-3 bg-black/50 rounded-[50%] blur-sm z-0 animate-[shadow-slide_0.8s_forwards]"></div>
 
-              {/* Hint Tooltip */}
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-center text-xs text-white bg-red-600/90 border border-yellow-400/50 px-2 py-1 rounded-full animate-bounce whitespace-nowrap shadow-sm z-20">
-                {text.open}
-              </div>
+              {/* Hint Tooltip - only show when dropped */}
+              {isDropped && (
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-center text-xs text-white bg-red-600/90 border border-yellow-400/50 px-2 py-1 rounded-full animate-bounce whitespace-nowrap shadow-sm z-20">
+                  {text.open}
+                </div>
+              )}
             </>
-          )}
-
-          {/* Render Opening State (Stays on ground) */}
-          {gameState === "opening" && (
-            <div className="relative z-10 transition-transform pb-0">
-              {/* Match the tilt from above for continuity */}
-              <div className="rotate-[15deg]">
-                <Capsule color={capsuleColor} isOpen={true} />
-              </div>
-              {/* Static shadow for opened state */}
-              <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-16 h-3 bg-black/40 rounded-[50%] blur-sm z-0"></div>
-            </div>
           )}
         </div>
       </div>
