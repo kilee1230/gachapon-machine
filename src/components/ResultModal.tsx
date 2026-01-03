@@ -43,7 +43,7 @@ export const ResultModal: React.FC<Props> = ({ fortune, onClose, language }) => 
         
         {/* Top Decoration */}
         <div className="h-6 sm:h-8 bg-red-600 w-full shrink-0 flex items-center justify-center relative">
-          <div className="w-16 h-1 bg-yellow-400 rounded-full"></div>
+             <div className="w-16 h-1 bg-yellow-400 rounded-full"></div>
           {/* Close Button (Icon) */}
           <button 
             onClick={onClose}
