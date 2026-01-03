@@ -1,3 +1,13 @@
+/// <reference types="vite/client" />
+
+// Vite Environment Variables
+declare global {
+  interface ImportMetaEnv {
+    readonly VITE_BUILD_NUMBER?: string;
+    readonly VITE_COMMIT_SHA?: string;
+  }
+}
+
 // Language Type
 export type Language = "zh" | "en";
 

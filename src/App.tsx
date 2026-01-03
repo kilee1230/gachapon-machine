@@ -283,6 +283,13 @@ export default function App() {
         >
           <Shuffle size={14} /> {text.reset}
         </button>
+        {/* Build Info */}
+        {import.meta.env.VITE_BUILD_NUMBER && (
+          <p className="mt-2 text-[10px] text-white/30 font-mono">
+            Build #{import.meta.env.VITE_BUILD_NUMBER} •{" "}
+            {String(import.meta.env.VITE_COMMIT_SHA).slice(0, 7)}
+          </p>
+        )}
       </footer>
 
       {/* Result Modal */}

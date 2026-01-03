@@ -60,6 +60,9 @@ jobs:
 
     - name: Build App
       run: pnpm build
+      env:
+        VITE_BUILD_NUMBER: ${{ github.run_number }}
+        VITE_COMMIT_SHA: ${{ github.sha }}
 
     - name: Build Storybook
       run: pnpm build-storybook
