@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Volume2, VolumeX, Play } from "lucide-react";
+import { trackMusicToggle } from "../analytics";
 
 const AUDIO_SRC = new URL("/audio/chinese-new-year-284910.mp3", import.meta.url)
   .href;
@@ -26,7 +27,10 @@ export const MusicPlayer: React.FC = () => {
       } else {
         // Tab is visible - resume if we were playing before
         if (wasPlayingBeforeHidden.current) {
-          audio.play().then(() => setIsPlaying(true)).catch(() => {});
+          audio
+            .play()
+            .then(() => setIsPlaying(true))
+            .catch(() => {});
         }
       }
     };
@@ -65,10 +69,16 @@ export const MusicPlayer: React.FC = () => {
     if (isPlaying) {
       audio.pause();
       setIsPlaying(false);
+      // Track: User muted music
+      trackMusicToggle("mute");
     } else {
       audio
         .play()
-        .then(() => setIsPlaying(true))
+        .then(() => {
+          setIsPlaying(true);
+          // Track: User unmuted music
+          trackMusicToggle("unmute");
+        })
         .catch(() => {});
     }
   };
