@@ -5,6 +5,15 @@ import { MusicPlayer } from "./components/MusicPlayer";
 import { FORTUNES } from "./data/fortunes";
 import { GameState, Fortune, Language } from "./types";
 import { Shuffle } from "lucide-react";
+import {
+  trackInsertCoin,
+  trackSpinKnob,
+  trackOpenCapsule,
+  trackViewResult,
+  trackResetMachine,
+  trackLanguageSwitch,
+  setUserLanguage,
+} from "./analytics";
 
 // Sound effect URLs
 const SOUNDS = {
@@ -44,9 +53,11 @@ const UI_TEXT = {
 const MAX_CAPSULES = 100;
 
 export default function App() {
-  // Scroll to top on page load
+  // Scroll to top on page load & set initial language for analytics
   useEffect(() => {
     window.scrollTo(0, 0);
+    // Set user's preferred language in GA (for user segmentation)
+    setUserLanguage(language);
   }, []);
 
   // State Initialization
@@ -94,6 +105,11 @@ export default function App() {
   // Persist language changes
   const handleLanguageToggle = () => {
     const newLang = language === "zh" ? "en" : "zh";
+
+    // Track: Language switch event
+    trackLanguageSwitch(language, newLang);
+    setUserLanguage(newLang);
+
     setLanguage(newLang);
     localStorage.setItem(STORAGE_KEYS.LANG, newLang);
   };
@@ -117,6 +133,9 @@ export default function App() {
       return;
     }
 
+    // Track: User inserted coin
+    trackInsertCoin(fortunePool.length);
+
     playSound("coin");
     setGameState("inserting");
 
@@ -127,6 +146,9 @@ export default function App() {
 
   const handleSpin = () => {
     if (gameState !== "ready") return;
+
+    // Track: User clicked knob to spin
+    trackSpinKnob();
 
     playSound("spin");
     setGameState("spinning");
@@ -146,6 +168,9 @@ export default function App() {
 
   const handleOpenCapsule = () => {
     if (gameState !== "dropped") return;
+
+    // Track: User clicked to open capsule
+    trackOpenCapsule(capsuleColor);
 
     playSound("open");
 
@@ -172,6 +197,9 @@ export default function App() {
     setTimeout(() => {
       playSound("reveal");
       setGameState("result");
+
+      // Track: User viewing result
+      trackViewResult(fortuneData.id);
     }, 800);
   };
 
@@ -183,6 +211,9 @@ export default function App() {
 
   // Full Factory Reset (Clear History)
   const handleFullReset = () => {
+    // Track: User pressed reset (before actually resetting)
+    trackResetMachine(drawnCount);
+
     // 1. Clear Local Storage History
     localStorage.removeItem(STORAGE_KEYS.HISTORY);
 
