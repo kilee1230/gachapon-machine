@@ -398,7 +398,7 @@ export default function App() {
       {/* Build Info*/}
       {import.meta.env.VITE_BUILD_NUMBER && (
         <p className="fixed bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-white/30 font-mono z-10">
-          {import.meta.env.VITE_BUILD_NUMBER}
+          build: {import.meta.env.VITE_BUILD_NUMBER}
         </p>
       )}
 
