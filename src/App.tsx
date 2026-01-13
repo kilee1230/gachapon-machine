@@ -13,6 +13,7 @@ import {
   trackResetMachine,
   trackLanguageSwitch,
   setUserLanguage,
+  trackPageView,
 } from "./analytics";
 
 // Sound effect URLs
@@ -29,6 +30,60 @@ const STORAGE_KEYS = {
   LANG: "gacha_2026_lang",
   HISTORY: "gacha_2026_history", // Stores IDs of drawn fortunes
 };
+
+// Get base path for routing (handles /gachapon-machine/ prefix in production)
+const getBasePath = () => {
+  // In production, base is /gachapon-machine/, in dev it's /
+  return import.meta.env.BASE_URL || "/";
+};
+
+// Parse language from URL path
+const getLanguageFromPath = (): Language => {
+  const basePath = getBasePath();
+  const path = window.location.pathname;
+
+  // Remove base path prefix to get the language segment
+  const relativePath = path.startsWith(basePath)
+    ? path.slice(basePath.length)
+    : path.slice(1); // fallback: just remove leading /
+
+  // Check for /en or /en/
+  if (relativePath === "en" || relativePath.startsWith("en/")) {
+    return "en";
+  }
+  // Default to zh for /, /zh, or /zh/
+  return "zh";
+};
+
+// Navigate to language route (updates URL)
+const navigateToLanguage = (lang: Language, replace = false) => {
+  const basePath = getBasePath();
+  const newPath = lang === "en" ? `${basePath}en` : basePath;
+  if (replace) {
+    window.history.replaceState({ lang }, "", newPath);
+  } else {
+    window.history.pushState({ lang }, "", newPath);
+  }
+};
+
+// Run immediately on module load before React renders
+if (typeof window !== "undefined") {
+  const basePath = getBasePath();
+  const path = window.location.pathname;
+  const relativePath = path.startsWith(basePath)
+    ? path.slice(basePath.length).replace(/\/$/, "")
+    : "";
+
+  // If at base path (empty relative path), check localStorage for saved preference
+  if (!relativePath || relativePath === "zh") {
+    const savedLang = localStorage.getItem(STORAGE_KEYS.LANG) as Language;
+
+    // If saved preference is English, redirect to /en
+    if (savedLang === "en") {
+      navigateToLanguage("en", true);
+    }
+  }
+}
 
 // UI Text Dictionary
 const UI_TEXT = {
@@ -58,18 +113,35 @@ export default function App() {
     window.scrollTo(0, 0);
     // Set user's preferred language in GA (for user segmentation)
     setUserLanguage(language);
+    // Track initial page view with language
+    trackPageView(language);
   }, []);
 
   // State Initialization
 
-  // 1. Language (Lazy Init)
+  // 1. Language (from URL path)
   const [language, setLanguage] = useState<Language>(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(STORAGE_KEYS.LANG) as Language;
-      return saved === "zh" || saved === "en" ? saved : "zh";
+      return getLanguageFromPath();
     }
     return "zh";
   });
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const newLang = getLanguageFromPath();
+      if (newLang !== language) {
+        setLanguage(newLang);
+        setUserLanguage(newLang);
+        // Track page view on back/forward navigation
+        trackPageView(newLang);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [language]);
 
   // 2. Fortune Pool (Lazy Init - Loads from LS immediately to prevent flash)
   const [fortunePool, setFortunePool] = useState<number[]>(() => {
@@ -102,7 +174,7 @@ export default function App() {
   const [capsuleColor, setCapsuleColor] = useState<string>("red");
   const [resetKey, setResetKey] = useState(0); // Used to force-remount the machine component for visual reset
 
-  // Persist language changes
+  // Handle language switch with URL navigation
   const handleLanguageToggle = () => {
     const newLang = language === "zh" ? "en" : "zh";
 
@@ -110,8 +182,15 @@ export default function App() {
     trackLanguageSwitch(language, newLang);
     setUserLanguage(newLang);
 
-    setLanguage(newLang);
+    // Persist to localStorage
     localStorage.setItem(STORAGE_KEYS.LANG, newLang);
+
+    // Navigate to new language route
+    navigateToLanguage(newLang);
+    setLanguage(newLang);
+
+    // Track page view with new language
+    trackPageView(newLang);
   };
 
   // Sound Helper
