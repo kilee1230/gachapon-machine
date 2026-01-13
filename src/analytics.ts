@@ -13,6 +13,7 @@ declare global {
 
 // Event names for the gachapon machine
 export const GA_EVENTS = {
+  PAGE_VIEW: "page_view",
   INSERT_COIN: "insert_coin",
   SPIN_KNOB: "spin_knob",
   OPEN_CAPSULE: "open_capsule",
@@ -122,6 +123,25 @@ export function setUserLanguage(language: string): void {
       user_properties: {
         preferred_language: language,
       },
+    });
+  }
+}
+
+/**
+ * Track page view with language information
+ * @param language - Current page language (zh or en)
+ * @param pagePath - Current page path
+ */
+export function trackPageView(language: string, pagePath?: string): void {
+  if (typeof window !== "undefined" && window.gtag) {
+    const path = pagePath || window.location.pathname;
+
+    window.gtag("event", GA_EVENTS.PAGE_VIEW, {
+      page_path: path,
+      page_location: window.location.href,
+      page_title: document.title,
+      language: language,
+      language_name: language === "zh" ? "Chinese" : "English",
     });
   }
 }
