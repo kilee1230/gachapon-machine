@@ -58,10 +58,14 @@ jobs:
         version: 9
         run_install: true
 
+    - name: Get short SHA
+      id: short-sha
+      run: echo "sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
     - name: Build App
       run: pnpm build
       env:
-        VITE_BUILD_NUMBER: ${{ github.run_number }}
+        VITE_BUILD_NUMBER: ${{ steps.short-sha.outputs.sha }}
         VITE_COMMIT_SHA: ${{ github.sha }}
 
     - name: Build Storybook
