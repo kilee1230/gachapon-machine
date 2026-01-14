@@ -94,6 +94,7 @@ const UI_TEXT = {
     reset: "重置机器",
     emptyAlert: "扭蛋已抽完！请重置机器重新开始。",
     resetConfirm: "确定要重置所有进度吗？",
+    build: "版本",
   },
   en: {
     title: "2026 Year of Horse",
@@ -102,6 +103,7 @@ const UI_TEXT = {
     reset: "Reset Machine",
     emptyAlert: "All fortunes drawn! Please reset to start over.",
     resetConfirm: "Are you sure you want to reset all progress?",
+    build: "Build",
   },
 };
 
@@ -397,8 +399,8 @@ export default function App() {
 
       {/* Build Info*/}
       {import.meta.env.VITE_BUILD_NUMBER && (
-        <p className="fixed bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-white/30 font-mono z-10">
-          build: {import.meta.env.VITE_BUILD_NUMBER}
+        <p className="fixed bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-white/30 font-mono z-10 pointer-events-none">
+          {text.build}: {import.meta.env.VITE_BUILD_NUMBER}
         </p>
       )}
 
