@@ -37,10 +37,21 @@ const getBasePath = () => {
   return import.meta.env.BASE_URL || "/";
 };
 
-// Parse language from URL path
+// Parse language from URL path or query param (for 404 redirect)
 const getLanguageFromPath = (): Language => {
   const basePath = getBasePath();
   const path = window.location.pathname;
+  const searchParams = new URLSearchParams(window.location.search);
+  
+  // Check for ?p= query param (from 404.html redirect)
+  const redirectPath = searchParams.get('p');
+  if (redirectPath) {
+    // Clean up URL by removing query param and setting proper path
+    const lang = redirectPath === 'en' || redirectPath.startsWith('en/') ? 'en' : 'zh';
+    const newPath = lang === 'en' ? `${basePath}en` : basePath;
+    window.history.replaceState(null, '', newPath);
+    return lang;
+  }
 
   // Remove base path prefix to get the language segment
   const relativePath = path.startsWith(basePath)
